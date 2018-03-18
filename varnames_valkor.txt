@@ -1,0 +1,76 @@
+
+See also here: http://www.valasztas.hu/dyn/pv14/szavossz/hu/M01/T020/szkjkv_006.html
+
+MEGYE: A választókerület megyéje
+
+OEVK: Országos Egyéni Választókerület száma
+
+SZEKHELY: válaszókerület székhelye
+
+TELEPUL: Adott választókör települése
+
+VALKOR: adott választókör száma az adott településen belül
+
+AE: A névjegyzékben és a mozgóurnát igénylõ választópolgárok jegyzékében lévõ választópolgárok száma
+
+
+FE: A szavazókörben megjelent választópolgárok száma
+
+FE_pct: A megjelent választópolgárok sázma a jogosultak százalékában
+
+BE: Átjelentkezett választópolgárok száma
+
+
+CE: A külképviseleti névjegyzékben szereplõ választópolgárok száma
+
+C: A külképviseleti névjegyzékben szereplõ választópolgárok száma
+
+
+EE: A választópolgárok száma összesen
+
+
+IE: Átjelentkezéssel és külképviseleten szavazók beérkezett borítékjainak száma
+
+JE: A szavazó választópolgárok száma összesen
+
+KE: Urnában és beérkezett borítékokban lévõ szavazólapok száma
+
+ME: Érvénytelen szavazólapok száma
+
+NE: Érvényes szavazólapok száma
+
+SZVLP_LST: Listás szavazólapok száma
+
+SZVLP_LST_LTR: Listás szavazólapok sázmának eltérése a megjelent szavazópolgárok számától
+
+ERVTL_LST: Érvénytelen listás szavazólapok száma
+
+ERV_LST: Érvényes listás szavazatok száma
+
+KULKEP_ATJEL: Átjelentkezéssel és külképviseleten szavazó választópolgárok beérkezett borítékjainak száma,listás
+
+BOL: Az átjelentkezett választópolgárok névjegyzékében és a mozgóurnát igénylõ választópolgárok jegyzékében szereplõ választópolgárok száma
+
+GL: Átjelentkezéssel szavazóként megjelent választópolgárok száma
+
+FIDESZ: Fidesz-KDNP
+
+MSZP: MSZP-EGYÜTT-DK-PM-MLP közös lista
+
+JOBBIK: Jobbik
+
+LMP: LMP
+
+MAS: Más, a fentiekben nem szereplõ párt/személy
+
+_egy: Adott párt(szövetség) egyéni szavazónak száma
+
+_egy_pct Adott párt(szövetség) egyéni szavazónak száma az összes egyéni szavazat százalékában
+
+-lst: Adott párt(szövetség) listás szavazónak száma
+
+_lst_pct Adott párt(szövetség) listás szavazónak száma az összes listás szavazat százalékában
+
+_egy_jlt: Az adott párt egyéni jelöltjének neve
+
+

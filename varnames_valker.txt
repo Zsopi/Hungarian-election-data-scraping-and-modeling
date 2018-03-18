@@ -1,0 +1,56 @@
+
+See also here: http://www.valasztas.hu/dyn/pv14/szavossz/hu/M01/E01/evkjkv.html
+
+MEGYE: A választókerület megyéje
+
+OEVK: Országos Egyéni Választókerületek száma
+
+SZEKHELY: válaszókerület székhelye
+
+AE: A névjegyzékben és a mozgóurnát igénylõ választópolgárok jegyzékében lévõ választópolgárok száma
+
+BE: Átjelentkezett választópolgárok száma
+
+CE: A külképviseleti névjegyzékben szereplõ választópolgárok száma
+
+EE: A választópolgárok száma összesen
+
+FE: A szavazókörben megjelent választópolgárok száma
+
+IE: Átjelentkezéssel és külképviseleten szavazók beérkezett borítékjainak száma
+
+JE: A szavazó választópolgárok száma összesen
+
+JE_pct:JE/AE
+
+KE: Urnában és beérkezett borítékokban lévõ szavazólapok száma
+
+ME: Érvénytelen szavazólapok száma
+
+ME_pct:ME/KE
+
+NE: Érvényes szavazólapok száma
+
+FIDESZ: Fidesz-KDNP
+
+MSZP: MSZP-EGYÜTT-DK-PM-MLP közös lista
+
+JOBBIK: Jobbik
+
+LMP: LMP
+
+MAS: Más, a fentiekben nem szereplõ párt/személy
+
+_egy: Adott párt(szövetség) egyéni szavazónak száma
+
+_egy_pct Adott párt(szövetség) egyéni szavazónak száma az összes egyéni szavazat százalékában
+
+-lst: Adott párt(szövetség) listás szavazónak száma
+
+_lst_pct Adott párt(szövetség) listás szavazónak száma az összes listás szavazat százalékában
+
+_egy_jlt: Az adott párt egyéni jelöltjének neve
+
+winner: Egyéni gyõztes pártja
+
+dev_lst_egy: az egyéni és listás szavazatok közötti eltérés, százalék
