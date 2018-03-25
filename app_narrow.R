@@ -128,6 +128,7 @@ get_seats_const_fidesz_plus_coord<-function(voting_share=61.26499,J_to_M,J_to_F,
         seats[1,FIDESZ_egy:=length(winners[winners=='FIDESZ_egy'])]
         seats[1,MSZP_egy:=length(winners[winners=='MSZP_egy'])]
         seats[1,JOBBIK_egy:=length(winners[winners=='JOBBIK_egy'])]
+        seats[1,LMP_egy:=length(winners[winners=='LMP_egy'])]                     
         
         seats[1,FIDESZ_sum:=FIDESZ_egy+FIDESZ_lst]
         seats[1,MSZP_sum:=MSZP_egy+MSZP_lst]
