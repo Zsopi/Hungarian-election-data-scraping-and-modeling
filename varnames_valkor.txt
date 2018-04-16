@@ -1,76 +1,86 @@
 
 See also here: http://www.valasztas.hu/dyn/pv14/szavossz/hu/M01/T020/szkjkv_006.html
 
-MEGYE: A választókerület megyéje
+MEGYE: A vÃ¡lasztÃ³kerÃ¼let megyÃ©je
 
-OEVK: Országos Egyéni Választókerület száma
+OEVK: OrszÃ¡gos EgyÃ©ni VÃ¡lasztÃ³kerÃ¼let szÃ¡ma
 
-SZEKHELY: válaszókerület székhelye
+SZEKHELY: vÃ¡laszÃ³kerÃ¼let szÃ©khelye
 
-TELEPUL: Adott választókör települése
+TELEPUL: Adott vÃ¡lasztÃ³kÃ¶r telepÃ¼lÃ©se
 
-VALKOR: adott választókör száma az adott településen belül
+VALKOR: adott vÃ¡lasztÃ³kÃ¶r szÃ¡ma az adott telepÃ¼lÃ©sen belÃ¼l
 
-AE: A névjegyzékben és a mozgóurnát igénylõ választópolgárok jegyzékében lévõ választópolgárok száma
+AE: A nÃ©vjegyzÃ©kben Ã©s a mozgÃ³urnÃ¡t igÃ©nylÅ‘ vÃ¡lasztÃ³polgÃ¡rok jegyzÃ©kÃ©ben lÃ©vÅ‘ vÃ¡lasztÃ³polgÃ¡rok szÃ¡ma
 
+FE: A szavazÃ³kÃ¶rben megjelent vÃ¡lasztÃ³polgÃ¡rok szÃ¡ma
 
-FE: A szavazókörben megjelent választópolgárok száma
+FE_pct: A megjelent vÃ¡lasztÃ³polgÃ¡rok szÃ¡ma a jogosultak szÃ¡zalÃ©kÃ¡ban
 
-FE_pct: A megjelent választópolgárok sázma a jogosultak százalékában
+BE: Ãtjelentkezett vÃ¡lasztÃ³polgÃ¡rok szÃ¡ma/Az Ã¡tjelentkezett vÃ¡lasztÃ³polgÃ¡rok nÃ©vjegyzÃ©kÃ©ben Ã©s a mozgÃ³urnÃ¡t igÃ©nylÅ‘ vÃ¡lasztÃ³polgÃ¡rok jegyzÃ©kÃ©ben szereplÅ‘ vÃ¡lasztÃ³polgÃ¡rok szÃ¡ma
 
-BE: Átjelentkezett választópolgárok száma
+GE: ÃtjelentkezÃ©ssel szavazÃ³kÃ©nt megjelent vÃ¡lasztÃ³polgÃ¡rok szÃ¡ma
 
+C: A kÃ¼lkÃ©pviseleti nÃ©vjegyzÃ©kben szereplÅ‘ vÃ¡lasztÃ³polgÃ¡rok szÃ¡ma   
 
-CE: A külképviseleti névjegyzékben szereplõ választópolgárok száma
+EE: A vÃ¡lasztÃ³polgÃ¡rok szÃ¡ma Ã¶sszesen (Ã¡tjelentkezÃ©s+kÃ¼lfÃ¶ldi szavazat esetÃ©n)
 
-C: A külképviseleti névjegyzékben szereplõ választópolgárok száma
+IE: ÃtjelentkezÃ©ssel Ã©s kÃ¼lkÃ©pviseleten szavazÃ³k beÃ©rkezett borÃ­tÃ©kjainak szÃ¡ma
 
+JE: A szavazÃ³ vÃ¡lasztÃ³polgÃ¡rok szÃ¡ma Ã¶sszesen (Ã¡tjelentkezÃ©s+kÃ¼lfÃ¶ldi szavazat esetÃ©n)
 
-EE: A választópolgárok száma összesen
+OE: UrnÃ¡ban lÃ©vÅ‘, bÃ©lyegzÅ‘lenyomat nÃ©lkÃ¼li szavazÃ³lapok szÃ¡ma
 
+KE: UrnÃ¡ban Ã©s beÃ©rkezett borÃ­tÃ©kokban lÃ©vÅ‘ szavazÃ³lapok szÃ¡ma
 
-IE: Átjelentkezéssel és külképviseleten szavazók beérkezett borítékjainak száma
+LE: EltÃ©rÃ©s a szavazÃ³kÃ©nt megjelentek szÃ¡mÃ¡tÃ³l (tÃ¶bblet: + / hiÃ¡nyzÃ³: -)
 
-JE: A szavazó választópolgárok száma összesen
+ME: Ã‰rvÃ©nytelen szavazÃ³lapok szÃ¡ma (egyÃ©ni szavazÃ¡s)
 
-KE: Urnában és beérkezett borítékokban lévõ szavazólapok száma
+NE: Ã‰rvÃ©nyes szavazÃ³lapok szÃ¡ma (egyÃ©ni szavazÃ¡s)
 
-ME: Érvénytelen szavazólapok száma
+NOSTAMP_LST: UrnÃ¡ban lÃ©vÅ‘, bÃ©lyegzÅ‘lenyomat nÃ©lkÃ¼li listÃ¡s szavazÃ³lapok szÃ¡ma
 
-NE: Érvényes szavazólapok száma
+SZVLP_LST: ListÃ¡s szavazÃ³lapok szÃ¡ma
 
-SZVLP_LST: Listás szavazólapok száma
+SZVLP_LST_LTR: ListÃ¡s szavazÃ³lapok szÃ¡mÃ¡nak eltÃ©rÃ©se a megjelent szavazÃ³polgÃ¡rok szÃ¡mÃ¡tÃ³l
 
-SZVLP_LST_LTR: Listás szavazólapok sázmának eltérése a megjelent szavazópolgárok számától
+ERVTL_LST: Ã‰rvÃ©nytelen listÃ¡s szavazÃ³lapok szÃ¡ma
 
-ERVTL_LST: Érvénytelen listás szavazólapok száma
+ERV_LST: Ã‰rvÃ©nyes listÃ¡s szavazatok szÃ¡ma
 
-ERV_LST: Érvényes listás szavazatok száma
+KULKEP_ATJEL: ÃtjelentkezÃ©ssel Ã©s kÃ¼lkÃ©pviseleten szavazÃ³ vÃ¡lasztÃ³polgÃ¡rok beÃ©rkezett borÃ­tÃ©kjainak szÃ¡ma,listÃ¡s
 
-KULKEP_ATJEL: Átjelentkezéssel és külképviseleten szavazó választópolgárok beérkezett borítékjainak száma,listás
+BOL: A BE vÃ¡ltozÃ³ba kerÃ¼lt az Ã©rtÃ©k
 
-BOL: Az átjelentkezett választópolgárok névjegyzékében és a mozgóurnát igénylõ választópolgárok jegyzékében szereplõ választópolgárok száma
-
-GL: Átjelentkezéssel szavazóként megjelent választópolgárok száma
+GL: Ugyanaz, mint a GE (ÃtjelentkezÃ©ssel szavazÃ³kÃ©nt megjelent vÃ¡lasztÃ³polgÃ¡rok szÃ¡ma)
 
 FIDESZ: Fidesz-KDNP
 
-MSZP: MSZP-EGYÜTT-DK-PM-MLP közös lista
-
 JOBBIK: Jobbik
+
+MSZP: MSZP-EGYÃœTT kÃ¶zÃ¶s lista
+
+DK: Demokratikus KoalÃ­ciÃ³
 
 LMP: LMP
 
-MAS: Más, a fentiekben nem szereplõ párt/személy
+MOMENTUM: Momentum Mozgalom
 
-_egy: Adott párt(szövetség) egyéni szavazónak száma
+EGYUTT: EgyÃ¼tt MagyarorszÃ¡gÃ©rt
 
-_egy_pct Adott párt(szövetség) egyéni szavazónak száma az összes egyéni szavazat százalékában
+MKKP: Magyar KÃ©tfarkÃº Kutya PÃ¡rt
 
--lst: Adott párt(szövetség) listás szavazónak száma
+MAS: MÃ¡s, a fentiekben nem szereplÅ‘ pÃ¡rt/szemÃ©ly
 
-_lst_pct Adott párt(szövetség) listás szavazónak száma az összes listás szavazat százalékában
+_egy: Adott pÃ¡rt(szÃ¶vetsÃ©g) egyÃ©ni szavazÃ³nak szÃ¡ma
 
-_egy_jlt: Az adott párt egyéni jelöltjének neve
+_egy_pct Adott pÃ¡rt(szÃ¶vetsÃ©g) egyÃ©ni szavazÃ³nak szÃ¡ma az Ã¶sszes egyÃ©ni szavazat szÃ¡zalÃ©kÃ¡ban
+
+-lst: Adott pÃ¡rt(szÃ¶vetsÃ©g) listÃ¡s szavazÃ³nak szÃ¡ma
+
+_lst_pct Adott pÃ¡rt(szÃ¶vetsÃ©g) listÃ¡s szavazÃ³nak szÃ¡ma az Ã¶sszes listÃ¡s szavazat szÃ¡zalÃ©kÃ¡ban
+
+_egy_jlt: Az adott pÃ¡rt egyÃ©ni jelÃ¶ltjÃ©nek neve
 
 
