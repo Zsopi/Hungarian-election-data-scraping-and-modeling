@@ -11,7 +11,7 @@ ifelse(.Platform$OS.type == 'windows',
        Sys.setlocale(category = 'LC_ALL', locale = 'hu_HU.utf8'))
 
 #read in the data, then you do not need to scrape :)
-valkor_results_2018_df_prelim<-data.table(read.csv('https://raw.githubusercontent.com/Zsopi/Hungarian-election-data-scraping-and-modeling/master/valkor_results_2018.csv'))
+valkor_results_2018_df<-data.table(read.csv('https://raw.githubusercontent.com/Zsopi/Hungarian-election-data-scraping-and-modeling/master/valkor_results_final_2018.csv'))
 
 
 #setting working directory, change it as desired, otherwise uses default working directory
@@ -292,7 +292,7 @@ View(match_table_final)
 ###############
 valkor_results_2018_df<-cbind(valkor_results_df[,X:VALKOR], data.table(match_table_final[,Ellenzekidelegalt:NINCSELLENZEK]),valkor_results_df[,AE:LEFTLIB_OPP_lst_pct])
 
-valkor_results_2018_df[,foreing_dummy:=ifelse(is.na(valkor_results_2018_df$NE),1,0)]
+valkor_results_2018_df[,foreign_dummy:=ifelse(is.na(valkor_results_2018_df$NE),1,0)]
 
 #summary of list votes
 listresults_districts<-valkor_results_2018_df[,lapply(.SD, sum, na.rm=T),.SDcols=c('FIDESZ_lst','JOBBIK_lst','MSZP_lst','LMP_lst','DK_lst','MOMENTUM_lst','EGYUTT_lst','MKKP_lst','MAS_lst','ERV_LST'),by=.(MEGYE,OEVK)]
@@ -310,10 +310,13 @@ egy_results_settlements_pct$NE<-egy_results_settlements$NE
 
 setkey(listresults_districts,MEGYE,OEVK)
 
-################Writing resulting data table
+################Writing resulting data tables
 write.csv(valkor_results_2018_df,paste0(wd,'/valkor_results_final_2018.csv'))
 valkor_results_2018_df_t<-read.csv(paste0(wd,'/valkor_results_final_2018.csv'))
 View(valkor_results_2018_df_t)
+
+write.csv(listresults_settlements_pct,paste0(wd,'/valkor_results_final_2018.csv'))
+
 
 #template for getting vote ratio in an individual settlement
 valkor_results_2018_df[TELEPUL=="Hódmezővásárhely",(sum(FIDESZ_egy,na.rm=T)/sum(FE,na.rm=T))]
@@ -405,6 +408,7 @@ get_valker_results<-function(table_list) {
         temptable<-table_list[[5]]
         names(temptable)<-c('sorszam','nev','szervezet','szav','pct','kepv')
         
+        #this is deliberately verbose, to make understanding easier(for loop in previous get restults function may be difficult to read)
         temp_df[,'FIDESZ_egy']<-temptable[temptable$szervezet=='FIDESZ-KDNP','szav']
         temp_df[,'FIDESZ_egy_pct']<-temptable[temptable$szervezet=='FIDESZ-KDNP','pct']
         temp_df[,'FIDESZ_egy_jlt']<-temptable[temptable$szervezet=='FIDESZ-KDNP','nev']
@@ -440,7 +444,7 @@ get_valker_results<-function(table_list) {
         setDT(temptable)
         temptable[,szav:=lapply(szav,function(x) gsub('[[:space:]]','',as.character(x)))]
         
-        
+        #only "significant" independents are counted, with more than 2000 votes
         temp_df[,'FUGGETLEN_egy']<-ifelse ('Független jelölt' %in% temptable[szav>2000,szervezet],temptable[szav>2000,][szervezet=='Független jelölt',szav],NA)
         temp_df[,'FUGGETLEN_egy_pct']<-ifelse ('Független jelölt' %in% temptable[szav>2000,szervezet],temptable[szav>2000,][szervezet=='Független jelölt',pct],NA)
         temp_df[,'FUGGETLEN_egy_jlt']<-ifelse ('Független jelölt' %in% temptable[szav>2000,szervezet],temptable[szav>2000,][szervezet=='Független jelölt',nev],NA)
