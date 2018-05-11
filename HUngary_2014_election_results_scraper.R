@@ -1,13 +1,22 @@
-library(rvest)
-library(data.table)
-library(jsonlite)
-library(httr)
-library(dplyr)
+### This will scrape the resuts of the 2014 Hungarian parliamentary election and save it in two csv files
 
 # setting locale for accented character handling
 ifelse(.Platform$OS.type == 'windows', 
        Sys.setlocale(category = 'LC_ALL', locale = 'Hungarian'), 
        Sys.setlocale(category = 'LC_ALL', locale = 'hu_HU.utf8'))
+
+
+
+Packages          <- c('dplyr','rvest','jsonlite','ggplot2','data.table','httr','readxl')
+InstalledPackages     <- rownames(installed.packages())
+
+# install/load packages
+sapply(Packages, function(p)  {
+  if (!(p %in% (InstalledPackages))) { install.packages(p, quiet = TRUE) } 
+  library(p, character.only = TRUE, quietly = TRUE, logical.return = TRUE)
+} )
+
+
 
 #setting working directory, change it as desired, otherwise uses default working directory
 wd<-getwd()
@@ -94,14 +103,23 @@ valkor_id_df[TELEPUL=='Budapest',TELEPUL:=TELEPUL_BP]
 valkor_id_df<-valkor_id_df[,lapply(.SD,function(x) as.character(x))]
 
 ###############SCRAPING VOTING PLACE RESULTS
+
 #scraping initial voting place results from web (results in large list of lists of tables)
-#happens three parts to reduce  chance of timeout
-valkor_results<-lapply(urls_all_indiv[1:4000], function(url) read_html(url)%>%html_table())
-valkor_results1<-lapply(urls_all_indiv[4001:8000], function(url) read_html(url)%>%html_table())
-valkor_results2<-lapply(urls_all_indiv[8001:length(urls_all_indiv)], function(url) read_html(url)%>%html_table())
+#happens in several  parts to reduce  chance of timeout
+valkor_results1<-lapply(urls_all_indiv[1:1000], function(url) read_html(url)%>%html_table())
+valkor_results2<-lapply(urls_all_indiv[1001:2000], function(url) read_html(url)%>%html_table())
+valkor_results3<-lapply(urls_all_indiv[2001:3000], function(url) read_html(url)%>%html_table())
+valkor_results4<-lapply(urls_all_indiv[3001:4000], function(url) read_html(url)%>%html_table())
+valkor_results5<-lapply(urls_all_indiv[4001:5000], function(url) read_html(url)%>%html_table())
+valkor_results6<-lapply(urls_all_indiv[5001:6000], function(url) read_html(url)%>%html_table())
+valkor_results7<-lapply(urls_all_indiv[6001:7000], function(url) read_html(url)%>%html_table())
+valkor_results8<-lapply(urls_all_indiv[7001:8000], function(url) read_html(url)%>%html_table())
+valkor_results9<-lapply(urls_all_indiv[8001:9000], function(url) read_html(url)%>%html_table())
+valkor_results10<-lapply(urls_all_indiv[9001:length(urls_all_indiv)], function(url) read_html(url)%>%html_table())
 
 #binding together results
-valkor_results_final<-c(valkor_results,valkor_results1,valkor_results2)
+valkor_results_final<-c(valkor_results1,valkor_results2,valkor_results3,valkor_results4,valkor_results5,valkor_results6,valkor_results7,valkor_results8,valkor_results9,valkor_results10)
+
 
 #setting variable names for individual voting place dataframe
 valkor_data_names<-c('MEGYE','OEVK','SZEKHELY','TELEPUL','VALKOR','AE','FE','FE_pct','BE','GE','C','EE','IE','JE','KE','LE','ME','NE','SZVLP_LST','SZVLP_LST_LTR','ERVTL_LST','ERV_LST','KULKEP_ATJEL','BOL','GL', 'FIDESZ_egy','MSZP_egy','JOBBIK_egy','LMP_egy','MAS_egy','FIDESZ_egy_pct','MSZP_egy_pct','JOBBIK_egy_pct','LMP_egy_pct','MAS_egy_pct', 'FIDESZ_lst','MSZP_lst','JOBBIK_lst','LMP_lst','MAS_lst','FIDESZ_lst_pct','MSZP_lst_pct','JOBBIK_lst_pct','LMP_lst_pct','MAS_lst_pct','FIDESZ_egy_jlt','MSZP_egy_jlt','JOBBIK_egy_jlt','LMP_egy_jlt')
@@ -195,6 +213,7 @@ valkor_results_df[,names(valkor_results_df[,AE:MAS_lst_pct]):=lapply(.SD,functio
 #turning everything except names into numeric characters
 valkor_results_df[,names(valkor_results_df[,AE:MAS_lst_pct]):=lapply(.SD,function(x) as.numeric(as.character(x))),.SDcols=AE:MAS_lst_pct]
 
+
 #correcting different representation in case of districts with foreign votes
 valkor_results_df[!is.na(C),SZVLP_LST_LTR:=SZVLP_LST_LTR-SZVLP_LST]
 valkor_results_df[!is.na(C),SZVLP_LST:=SZVLP_LST_LTR+SZVLP_LST]
@@ -220,8 +239,8 @@ listresults_districts[,OEVK:=as.numeric(as.character(OEVK))]
 setkey(listresults_districts,MEGYE,OEVK)
 
 ################Writing resulting data table
-write.csv(valkor_results_df,paste0(wd,'/valkor_results.csv'))
-tt<-read.csv(paste0(wd,'/valkor_results.csv'))
+write.csv(valkor_results_df,paste0(wd,'/valkor_results_2014.csv'))
+tt<-read.csv(paste0(wd,'/valkor_results_2014.csv'))
 
 
 #template for getting vote ratio in an individual settlement
@@ -359,9 +378,13 @@ data.frame(table(valker_result_df$winner))
 
 
 ##################saving valker results
-write.csv(valker_result_df,paste0(wd,'/valker_results.csv'))
-tt<-read.csv(paste0(wd,'/valker_results.csv'))
+write.csv(valker_result_df,paste0(wd,'/valker_results_2014.csv'))
+tt<-read.csv(paste0(wd,'/valker_results_2014.csv'))
 
+
+
+##############
+listresult_overall<-data.table(html_table(read_html('http://www.valasztas.hu/dyn/pv14/szavossz/hu/orszlist.html'),fill=T)[[2]])
 
 ##################END
 
