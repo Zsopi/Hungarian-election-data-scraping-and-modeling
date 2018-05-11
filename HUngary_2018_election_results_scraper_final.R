@@ -1,17 +1,30 @@
-library(rvest)
-library(data.table)
-library(jsonlite)
-library(httr)
-library(dplyr)
-library(readxl)
+#library(rvest)
+#library(data.table)
+#library(jsonlite)
+#library(httr)
+#library(dplyr)
+#library(readxl)
 
 # setting locale for accented character handling
 ifelse(.Platform$OS.type == 'windows', 
        Sys.setlocale(category = 'LC_ALL', locale = 'Hungarian'), 
        Sys.setlocale(category = 'LC_ALL', locale = 'hu_HU.utf8'))
 
+
+
+Packages          <- c('dplyr','rvest','jsonlite','ggplot2','data.table','httr','readxl')
+InstalledPackages     <- rownames(installed.packages())
+
+# install/load packages
+sapply(Packages, function(p)  {
+  if (!(p %in% (InstalledPackages))) { install.packages(p, quiet = TRUE) } 
+  library(p, character.only = TRUE, quietly = TRUE, logical.return = TRUE)
+} )
+
+
 #read in the data, then you do not need to scrape :)
 valkor_results_2018_df<-data.table(read.csv('https://raw.githubusercontent.com/Zsopi/Hungarian-election-data-scraping-and-modeling/master/valkor_results_final_2018.csv'))
+valker_results_2018_df<-data.table(read.csv('https://raw.githubusercontent.com/Zsopi/Hungarian-election-data-scraping-and-modeling/master/valker_results_final_2018.csv'))
 
 
 #setting working directory, change it as desired, otherwise uses default working directory
@@ -105,7 +118,7 @@ valkor_id_df<-valkor_id_df[,lapply(.SD,function(x) as.character(x))]
 
 ###############SCRAPING VOTING PLACE RESULTS
 #scraping initial voting place results from web (results in large list of lists of tables)
-#happens three parts to reduce  chance of timeout
+#happens several parts to reduce  chance of timeout
 valkor_results1<-lapply(urls_all_indiv[1:1000], function(url) read_html(url)%>%html_table())
 valkor_results2<-lapply(urls_all_indiv[1001:2000], function(url) read_html(url)%>%html_table())
 valkor_results3<-lapply(urls_all_indiv[2001:3000], function(url) read_html(url)%>%html_table())
@@ -143,6 +156,7 @@ party_names_official_lst<-c('FIDESZ - MAGYAR POLGÁRI SZÖVETSÉG-KERESZTÉNYDEM
 
 #example table
 temp_table<-valkor_results_final[[12]][[7]]
+temp_table<-valkor_results1[[12]][[8]]
 View(temp_table)
 
 
@@ -222,7 +236,7 @@ valkor_results_df[,(tempnames):=valkor_id_df[,tempnames,with=F]]
 tempnames<-NULL
 
 
-################tydiing up data table
+################tidying up data table
 #swapping whitespace plus % sign to just % sign in some columns
 valkor_results_df[,c('FE','GE','JE'):=.(sub('[[:space:]]\\%$','%',FE),sub('[[:space:]]\\%$','%',GE),sub('[[:space:]]\\%$','%',JE))]
 
@@ -260,11 +274,12 @@ valkor_results_df[,LEFTLIB_OPP_lst_pct:=(MSZP_lst_pct+LMP_lst_pct+DK_lst_pct+MOM
 if (!('X'%in%names(valkor_results_df))) {valkor_results_df<-cbind(X=(1:10285),valkor_results_df)}
 
 #this works, but only if locale is set to Hungarian. Spreadsheet needs to be saved in old excel (xls) format
-opp_obs<-read_excel('C:/Users/Zsopi/Google Drive/R/valasztas/opp_obs_xls.xls')
-#opp_obs1<-read_excel('https://github.com/Zsopi/Hungarian-election-data-scraping-and-modeling/blob/master/opp_obs_xls.xls')
-#download.file('https://github.com/Zsopi/Hungarian-election-data-scraping-and-modeling/raw/master/opp_obs_xls.xls',destfile = 'opp_obs_xls.xls')
-#opp_obs<-read_excel('opp_obs_xls.xls')
+#opp_obs<-read_excel('C:/Users/Zsopi/Google Drive/R/valasztas/opp_obs_xls.xls')
+#write.csv(opp_obs,'opp_obs.csv')
 
+# reading in opposition observer csv data from github
+opp_obs<-read.csv('https://raw.githubusercontent.com/Zsopi/Hungarian-election-data-scraping-and-modeling/master/opp_obs.csv')
+if (('X'%in%names(opp_obs))) {opp_obs$X<-NULL}
 setDT(opp_obs)
 
 opp_obs[,VALKOR:=sprintf("%03d", VALKOR)]
@@ -292,30 +307,36 @@ View(match_table_final)
 ###############
 valkor_results_2018_df<-cbind(valkor_results_df[,X:VALKOR], data.table(match_table_final[,Ellenzekidelegalt:NINCSELLENZEK]),valkor_results_df[,AE:LEFTLIB_OPP_lst_pct])
 
-valkor_results_2018_df[,foreign_dummy:=ifelse(is.na(valkor_results_2018_df$NE),1,0)]
+#read in preliminary data to find out ditrict where there was no result published initially
+valkor_results_2018_prelim_df<-data.table(read.csv('https://raw.githubusercontent.com/Zsopi/Hungarian-election-data-scraping-and-modeling/master/valkor_results_prelim_2018.csv'))
+
+valkor_results_2018_df[,foreign_dummy:=ifelse(is.na(valkor_results_2018_prelim_df$NE),1,0)]
 
 #summary of list votes
-listresults_districts<-valkor_results_2018_df[,lapply(.SD, sum, na.rm=T),.SDcols=c('FIDESZ_lst','JOBBIK_lst','MSZP_lst','LMP_lst','DK_lst','MOMENTUM_lst','EGYUTT_lst','MKKP_lst','MAS_lst','ERV_LST'),by=.(MEGYE,OEVK)]
+listresults_districts<-valkor_results_2018_df[,lapply(.SD, sum, na.rm=T),.SDcols=c('FIDESZ_lst','JOBBIK_lst','MSZP_lst','DK_lst','LMP_lst','MOMENTUM_lst','EGYUTT_lst','MKKP_lst','MAS_lst','ERVTL_LST','ERV_LST'),by=.(MEGYE,OEVK)]
 listresults_districts[,c(names(valkor_results_2018_df[,FIDESZ_lst_pct:MKKP_lst_pct]),'MAS_lst_pct'):=lapply(.SD,function(x) x/ERV_LST),.SDcols=(FIDESZ_lst:MAS_lst)]
 listresults_districts[,OEVK:=as.numeric(as.character(OEVK))]
 
 ####settlement aggregation
-listresults_settlements<-valkor_results_2018_df[,lapply(.SD, sum, na.rm=T),.SDcols=c('FIDESZ_lst','JOBBIK_lst','MSZP_lst','LMP_lst','DK_lst','MOMENTUM_lst','EGYUTT_lst','MKKP_lst','MAS_lst','NE'),by=.(TELEPUL)]
-listresults_settlements_pct<-cbind(listresults_settlements$TELEPUL,listresults_settlements[,lapply(.SD, function (x) x/NE),.SDcols=c('FIDESZ_lst','JOBBIK_lst','MSZP_lst','LMP_lst','DK_lst','MOMENTUM_lst','EGYUTT_lst','MKKP_lst','MAS_lst','NE')])
-listresults_settlements_pct$NE<-listresults_settlements$NE
+listresults_settlements<-valkor_results_2018_df[,lapply(.SD, sum, na.rm=T),.SDcols=c('FIDESZ_lst','JOBBIK_lst','MSZP_lst','DK_lst','LMP_lst','MOMENTUM_lst','EGYUTT_lst','MKKP_lst','MAS_lst','ERVTL_LST','ERV_LST'),by=.(TELEPUL)]
+listresults_settlements_pct<-cbind(listresults_settlements$TELEPUL,listresults_settlements[,lapply(.SD, function (x) x/ERV_LST),.SDcols=c('FIDESZ_lst','JOBBIK_lst','MSZP_lst','DK_lst','LMP_lst','MOMENTUM_lst','EGYUTT_lst','MKKP_lst','MAS_lst','ERVTL_LST','ERV_LST')])
+listresults_settlements_pct$ERV_LST<-listresults_settlements$ERV_LST
+listresults_settlements_pct<-cbind(listresults_settlements_pct,divis=(valkor_results_2018_df[foreing_dummy==0,][,max(FIDESZ_lst_pct)-min(FIDESZ_lst_pct),by=TELEPUL])[,2],divis_std=(valkor_results_2018_df[foreing_dummy==0,][,sd(FIDESZ_lst_pct),by=TELEPUL])[,2])
 
-egy_results_settlements<-valkor_results_2018_df[,lapply(.SD, sum, na.rm=T),.SDcols=c('FIDESZ_egy','JOBBIK_egy','MSZP_egy','LMP_egy','DK_egy','MOMENTUM_egy','EGYUTT_egy','MKKP_egy','MAS_egy','NE'),by=.(TELEPUL)]
-egy_results_settlements_pct<-cbind(egy_results_settlements$TELEPUL,egy_results_settlements[,lapply(.SD, function (x) x/NE),.SDcols=c('FIDESZ_egy','JOBBIK_egy','MSZP_egy','LMP_egy','DK_egy','MOMENTUM_egy','EGYUTT_egy','MKKP_egy','MAS_egy','NE')])
+
+egy_results_settlements<-valkor_results_2018_df[,lapply(.SD, sum, na.rm=T),.SDcols=c('FIDESZ_egy','JOBBIK_egy','MSZP_egy','DK_egy','LMP_egy','MOMENTUM_egy','EGYUTT_egy','MKKP_egy','MAS_egy','ME','NE'),by=.(TELEPUL)]
+egy_results_settlements_pct<-cbind(egy_results_settlements$TELEPUL,egy_results_settlements[,lapply(.SD, function (x) x/NE),.SDcols=c('FIDESZ_egy','JOBBIK_egy','MSZP_egy','DK_egy','LMP_egy','MOMENTUM_egy','EGYUTT_egy','MKKP_egy','MAS_egy','ME','NE')])
 egy_results_settlements_pct$NE<-egy_results_settlements$NE
 
 setkey(listresults_districts,MEGYE,OEVK)
 
 ################Writing resulting data tables
-write.csv(valkor_results_2018_df,paste0(wd,'/valkor_results_final_2018.csv'))
+write.csv(valkor_results_2018_df,'valkor_results_final_2018.csv')
 valkor_results_2018_df_t<-read.csv(paste0(wd,'/valkor_results_final_2018.csv'))
 View(valkor_results_2018_df_t)
 
-write.csv(listresults_settlements_pct,paste0(wd,'/valkor_results_final_2018.csv'))
+write.csv(listresults_settlements_pct,'listresults_settlements_pct.csv')
+write.csv(egy_results_settlements_pct,'egy_settlements_pct.csv')
 
 
 #template for getting vote ratio in an individual settlement
@@ -487,29 +508,54 @@ valker_result_df[,MAS_egy_pct:=MAS_egy/NE]
 setkey(valker_result_df,MEGYE,OEVK)
 setkey(listresults_districts,MEGYE,OEVK)
 
-valker_result_df<-valker_result_df[listresults_districts,`:=`(FIDESZ_lst = i.FIDESZ_lst, MSZP_lst=i.MSZP_lst,JOBBIK_lst=i.JOBBIK_lst,LMP_lst=i.LMP_lst,DK_lst=i.DK_lst,MOMENTUM_lst=i.MOMENTUM_lst,EGYUTT_lst=i.EGYUTT_lst,MKKP_lst=i.MKKP_lst,MAS_lst=i.MAS_lst,FIDESZ_lst_pct = i.FIDESZ_lst_pct, MSZP_lst_pct=i.MSZP_lst_pct,JOBBIK_lst_pct=i.JOBBIK_lst_pct,LMP_lst_pct=i.LMP_lst_pct,DK_lst_pct=i.DK_lst_pct,MOMENTUM_lst_pct=i.MOMENTUM_lst_pct,EGYUTT_lst_pct=i.EGYUTT_lst_pct,MKKP_lst_pct=i.MKKP_lst_pct,MAS_lst_pct=i.MAS_lst_pct)]
+valker_result_df<-valker_result_df[listresults_districts,`:=`(ERVTL_LST=i.ERVTL_LST,ERV_LST=i.ERV_LST,FIDESZ_lst = i.FIDESZ_lst, MSZP_lst=i.MSZP_lst,JOBBIK_lst=i.JOBBIK_lst,LMP_lst=i.LMP_lst,DK_lst=i.DK_lst,MOMENTUM_lst=i.MOMENTUM_lst,EGYUTT_lst=i.EGYUTT_lst,MKKP_lst=i.MKKP_lst,MAS_lst=i.MAS_lst,FIDESZ_lst_pct = i.FIDESZ_lst_pct, MSZP_lst_pct=i.MSZP_lst_pct,JOBBIK_lst_pct=i.JOBBIK_lst_pct,LMP_lst_pct=i.LMP_lst_pct,DK_lst_pct=i.DK_lst_pct,MOMENTUM_lst_pct=i.MOMENTUM_lst_pct,EGYUTT_lst_pct=i.EGYUTT_lst_pct,MKKP_lst_pct=i.MKKP_lst_pct,MAS_lst_pct=i.MAS_lst_pct)]
 
 valker_result_df<-cbind(valker_result_df,winner=colnames(valker_result_df[,FIDESZ_egy:MAS_egy])[apply(valker_result_df[,FIDESZ_egy:MAS_egy],1,which.max)])
 
 #calculating ratios
 valker_result_df[,FE_pct:=FE/AE]
-valker_result_df[,names(valkor_results_df[,FIDESZ_egy_pct:MAS_egy_pct]):=lapply(.SD,function(x) x/NE),.SDcols=(FIDESZ_egy:MAS_egy)]
+valker_result_df[,names(valker_result_df[,FIDESZ_egy_pct:MAS_egy_pct]):=lapply(.SD,function(x) x/NE),.SDcols=(FIDESZ_egy:MAS_egy)]
 #valker_result_df[,names(valkor_results_df[,FIDESZ_lst_pct:MAS_lst_pct]):=lapply(.SD,function(x) x/ERV_LST),.SDcols=(FIDESZ_lst:MAS_lst)]
 
-View(valker_result_df[,dev_lst_egy:=FIDESZ_egy_pct-FIDESZ_lst_pct][order(dev_lst_egy)])
+#aggreagting liberal/left opposition votes
+valker_result_df[,LEFTLIB_OPP_lst_pct:=(MSZP_lst_pct+LMP_lst_pct+DK_lst_pct+MOMENTUM_lst_pct+EGYUTT_lst_pct)]
+valker_result_df[,LEFTLIB_OPP_egy_pct:=rowSums(.SD, na.rm=T),.SDcols=valker_names_egy_pct[3:7]]
+
+valker_result_df[,LEFTLIB_OPP_lst:=(MSZP_lst+LMP_lst+DK_lst+MOMENTUM_lst+EGYUTT_lst)]
+valker_result_df[,LEFTLIB_OPP_egy:=rowSums(.SD, na.rm=T),.SDcols=valker_names_egy[3:7]]
+
+
+#calculating difference between individual and list vote percents (positive=individual larger)
+valker_result_df[,FIDESZ_dev_lst_egy:=FIDESZ_egy_pct-FIDESZ_lst_pct]
+valker_result_df[,JOBBIK_dev_lst_egy:=JOBBIK_egy_pct-JOBBIK_lst_pct]
+valker_result_df[,LEFTLIB_OPP_dev_lst_egy:=LEFTLIB_OPP_egy_pct-LEFTLIB_OPP_lst_pct]
+
+#optional
+valker_result_df[,MSZP_DK_dev_lst_egy:=(MSZP_egy_pct+DK_egy_pct)-(MSZP_lst_pct+DK_lst_pct)]
+valker_result_df[,LMP_dev_lst_egy:=LMP_egy_pct-LMP_lst_pct]
+valker_result_df[,EGYUTT_dev_lst_egy:=EGYUTT_egy_pct-EGYUTT_lst_pct]
+valker_result_df[,MOMENTUM_dev_lst_egy:=MOMENTUM_egy_pct-MOMENTUM_lst_pct]
+valker_result_df[,MKKP_dev_lst_egy:=MKKP_egy_pct-MKKP_lst_pct]
+
+valker_result_df[,FIDESZ_dev_lst_egy_vts:=FIDESZ_egy-FIDESZ_lst]
+valker_result_df[,JOBBIK_dev_lst_egy_vts:=JOBBIK_egy-JOBBIK_lst]
+valker_result_df[,LEFTLIB_OPP_dev_lst_egy_vts:=LEFTLIB_OPP_egy-LEFTLIB_OPP_lst]
+
+#optional
+valker_result_df[,MSZP_DK_dev_lst_egy_vts:=(MSZP_egy+DK_egy)-(MSZP_lst+DK_lst)]
+valker_result_df[,LMP_dev_lst_egy_vts:=LMP_egy-LMP_lst]
+valker_result_df[,EGYUTT_dev_lst_egy_vts:=EGYUTT_egy-EGYUTT_lst]
+valker_result_df[,MOMENTUM_dev_lst_egy_vts:=MOMENTUM_egy-MOMENTUM_lst]
+valker_result_df[,MKKP_dev_lst_egy_vts:=MKKP_egy-MKKP_lst]
 
 data.frame(table(valker_result_df$winner))
 
 valker_result_df_2018<-valker_result_df
 
 ##################saving valker results
-write.csv(valker_result_df,paste0(wd,'/valker_results_final_2018.csv'))
-tt<-read.csv(paste0(wd,'/valker_results_final_2018.csv'))
-
-
-
-##############
-listresult_overall<-data.table(html_table(read_html('http://www.valasztas.hu/dyn/pv14/szavossz/hu/orszlist.html'),fill=T)[[2]])
+write.csv(valker_result_df,'valker_results_final_2018.csv')
+tt<-read.csv('valker_results_final_2018.csv')
+setDT(tt)
 
 ##################END
 
